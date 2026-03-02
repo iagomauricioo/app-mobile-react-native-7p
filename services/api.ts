@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../stores/useAuthStore';
 
 const api = axios.create({
-  baseURL: 'http://192.168.0.4:8080',
+  baseURL: 'https://api.caldosesopacg.com',
   headers: { 'Content-Type': 'application/json' },
 });
 
