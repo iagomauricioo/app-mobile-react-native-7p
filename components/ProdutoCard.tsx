@@ -16,7 +16,7 @@ export function ProdutoCard({ produto, onToggleDisponibilidade, isToggling }: Pr
     <View style={styles.card}>
       <View style={styles.row}>
         {imageError || !produto.imagemUrl ? (
-          <View style={styles.placeholder}>
+          <View style={styles.placeholder} accessibilityLabel="Produto sem foto">
             <Text style={styles.placeholderText}>Sem foto</Text>
           </View>
         ) : (
@@ -25,6 +25,7 @@ export function ProdutoCard({ produto, onToggleDisponibilidade, isToggling }: Pr
             style={styles.image}
             resizeMode="cover"
             onError={() => setImageError(true)}
+            accessibilityLabel={`Foto do produto ${produto.nome}`}
           />
         )}
         <View style={styles.info}>
@@ -36,6 +37,8 @@ export function ProdutoCard({ produto, onToggleDisponibilidade, isToggling }: Pr
               disabled={isToggling}
               trackColor={{ false: '#D1D5DB', true: '#FDBA74' }}
               thumbColor={produto.disponivel ? '#F97316' : '#9CA3AF'}
+              accessibilityLabel={`Disponibilidade do produto ${produto.nome}, ${produto.disponivel ? 'disponível' : 'indisponível'}`}
+              accessibilityRole="switch"
             />
           </View>
           {produto.descricao ? (
@@ -61,12 +64,12 @@ const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12, elevation: 2 },
   row: { flexDirection: 'row' },
   placeholder: { width: 80, height: 80, borderRadius: 10, backgroundColor: '#E7E5E4', alignItems: 'center', justifyContent: 'center' },
-  placeholderText: { color: '#A8A29E', fontSize: 12 },
+  placeholderText: { color: '#78716C', fontSize: 12 },
   image: { width: 80, height: 80, borderRadius: 10 },
   info: { flex: 1, marginLeft: 12 },
   nameRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   name: { fontSize: 16, fontWeight: 'bold', color: '#1C1917', flexShrink: 1 },
-  desc: { fontSize: 12, color: '#A8A29E', marginTop: 4 },
+  desc: { fontSize: 12, color: '#78716C', marginTop: 4 },
   variacoes: { marginTop: 12, paddingTop: 12, borderTopWidth: 1, borderTopColor: '#F5F5F4' },
   varRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 4 },
   varName: { fontSize: 12, color: '#78716C' },

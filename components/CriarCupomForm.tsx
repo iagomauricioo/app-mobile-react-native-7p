@@ -71,46 +71,46 @@ export function CriarCupomForm({ visible, onClose, onSubmit, isSubmitting }: Cri
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
         <View style={styles.overlay}>
           <View style={styles.modal}>
-            <Text style={styles.title}>Novo Cupom</Text>
+            <Text style={styles.title} accessibilityRole="header" accessibilityLabel="Novo Cupom">Novo Cupom</Text>
             <ScrollView showsVerticalScrollIndicator={false}>
               <Text style={styles.label}>Código</Text>
-              <TextInput style={styles.input} value={codigo} onChangeText={(t) => setCodigo(t.toUpperCase())} placeholder="EX: PROMO10" autoCapitalize="characters" />
-              {errors.codigo ? <Text style={styles.error}>{errors.codigo}</Text> : <View style={{ height: 12 }} />}
+              <TextInput style={styles.input} value={codigo} onChangeText={(t) => setCodigo(t.toUpperCase())} placeholder="EX: PROMO10" autoCapitalize="characters" accessibilityLabel="Código do cupom" />
+              {errors.codigo ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.codigo}</Text> : <View style={{ height: 12 }} />}
 
               <Text style={styles.label}>Tipo de Desconto</Text>
               <View style={styles.typeRow}>
-                <TouchableOpacity onPress={() => setTipoDesconto('PERCENTUAL')} style={[styles.typeBtn, tipoDesconto === 'PERCENTUAL' && styles.typeBtnActive]}>
-                  <Text style={[styles.typeText, tipoDesconto === 'PERCENTUAL' && styles.typeTextActive]}>Percentual</Text>
+                <TouchableOpacity onPress={() => setTipoDesconto('PERCENTUAL')} style={[styles.typeBtn, tipoDesconto === 'PERCENTUAL' && styles.typeBtnActive]} accessibilityRole="button" accessibilityState={{ selected: tipoDesconto === 'PERCENTUAL' }}>
+                  <Text style={[styles.typeText, tipoDesconto === 'PERCENTUAL' && styles.typeTextActive]} maxFontSizeMultiplier={1.5}>Percentual</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setTipoDesconto('VALOR_FIXO')} style={[styles.typeBtn, tipoDesconto === 'VALOR_FIXO' && styles.typeBtnActive]}>
-                  <Text style={[styles.typeText, tipoDesconto === 'VALOR_FIXO' && styles.typeTextActive]}>Valor Fixo</Text>
+                <TouchableOpacity onPress={() => setTipoDesconto('VALOR_FIXO')} style={[styles.typeBtn, tipoDesconto === 'VALOR_FIXO' && styles.typeBtnActive]} accessibilityRole="button" accessibilityState={{ selected: tipoDesconto === 'VALOR_FIXO' }}>
+                  <Text style={[styles.typeText, tipoDesconto === 'VALOR_FIXO' && styles.typeTextActive]} maxFontSizeMultiplier={1.5}>Valor Fixo</Text>
                 </TouchableOpacity>
               </View>
-              {errors.tipoDesconto ? <Text style={styles.error}>{errors.tipoDesconto}</Text> : <View style={{ height: 12 }} />}
+              {errors.tipoDesconto ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.tipoDesconto}</Text> : <View style={{ height: 12 }} />}
 
               <Text style={styles.label}>Valor do Desconto</Text>
-              <TextInput style={styles.input} value={valorDesconto} onChangeText={setValorDesconto} placeholder={tipoDesconto === 'PERCENTUAL' ? 'Ex: 10' : 'Ex: 500 (centavos)'} keyboardType="numeric" />
-              {errors.valorDesconto ? <Text style={styles.error}>{errors.valorDesconto}</Text> : <View style={{ height: 12 }} />}
+              <TextInput style={styles.input} value={valorDesconto} onChangeText={setValorDesconto} placeholder={tipoDesconto === 'PERCENTUAL' ? 'Ex: 10' : 'Ex: 500 (centavos)'} keyboardType="numeric" accessibilityLabel="Valor do desconto" />
+              {errors.valorDesconto ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.valorDesconto}</Text> : <View style={{ height: 12 }} />}
 
               <Text style={styles.label}>Data de Início</Text>
-              <TextInput style={styles.input} value={dataInicio} onChangeText={setDataInicio} placeholder="AAAA-MM-DD" />
-              {errors.dataInicio ? <Text style={styles.error}>{errors.dataInicio}</Text> : <View style={{ height: 12 }} />}
+              <TextInput style={styles.input} value={dataInicio} onChangeText={setDataInicio} placeholder="AAAA-MM-DD" accessibilityLabel="Data de início" />
+              {errors.dataInicio ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.dataInicio}</Text> : <View style={{ height: 12 }} />}
 
               <Text style={styles.label}>Data de Fim</Text>
-              <TextInput style={styles.input} value={dataFim} onChangeText={setDataFim} placeholder="AAAA-MM-DD" />
-              {errors.dataFim ? <Text style={styles.error}>{errors.dataFim}</Text> : <View style={{ height: 12 }} />}
+              <TextInput style={styles.input} value={dataFim} onChangeText={setDataFim} placeholder="AAAA-MM-DD" accessibilityLabel="Data de fim" />
+              {errors.dataFim ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.dataFim}</Text> : <View style={{ height: 12 }} />}
 
               <Text style={styles.label}>Limite de Usos</Text>
-              <TextInput style={styles.input} value={limiteUsos} onChangeText={setLimiteUsos} placeholder="Ex: 100" keyboardType="numeric" />
-              {errors.limiteUsos ? <Text style={styles.error}>{errors.limiteUsos}</Text> : <View style={{ height: 12 }} />}
+              <TextInput style={styles.input} value={limiteUsos} onChangeText={setLimiteUsos} placeholder="Ex: 100" keyboardType="numeric" accessibilityLabel="Limite de usos" />
+              {errors.limiteUsos ? <Text style={styles.error} accessibilityLiveRegion="polite">{errors.limiteUsos}</Text> : <View style={{ height: 12 }} />}
             </ScrollView>
 
             <View style={styles.btnRow}>
-              <TouchableOpacity onPress={handleClose} disabled={isSubmitting} style={styles.cancelBtn}>
-                <Text style={styles.cancelText}>Cancelar</Text>
+              <TouchableOpacity onPress={handleClose} disabled={isSubmitting} style={styles.cancelBtn} accessibilityRole="button" accessibilityLabel="Cancelar">
+                <Text style={styles.cancelText} maxFontSizeMultiplier={1.5}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={handleSubmit} disabled={isSubmitting} style={styles.submitBtn}>
-                {isSubmitting ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitText}>Criar Cupom</Text>}
+              <TouchableOpacity onPress={handleSubmit} disabled={isSubmitting} style={styles.submitBtn} accessibilityRole="button" accessibilityLabel="Criar Cupom">
+                {isSubmitting ? <ActivityIndicator size="small" color="#fff" /> : <Text style={styles.submitText} maxFontSizeMultiplier={1.5}>Criar Cupom</Text>}
               </TouchableOpacity>
             </View>
           </View>

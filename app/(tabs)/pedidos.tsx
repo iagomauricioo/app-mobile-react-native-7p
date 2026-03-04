@@ -23,21 +23,21 @@ export default function PedidosScreen() {
       <View style={s.filterBarWrapper}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={s.filterBarContent}>
           {FILTER_OPTIONS.map((opt) => (
-            <TouchableOpacity key={opt.label} onPress={() => setStatusFilter(opt.value)} style={[s.chip, statusFilter === opt.value && s.chipActive]}>
-              <Text style={[s.chipText, statusFilter === opt.value && s.chipTextActive]}>{opt.label}</Text>
+            <TouchableOpacity key={opt.label} onPress={() => setStatusFilter(opt.value)} style={[s.chip, statusFilter === opt.value && s.chipActive]} accessibilityRole="button" accessibilityState={{ selected: statusFilter === opt.value }}>
+              <Text style={[s.chipText, statusFilter === opt.value && s.chipTextActive]} maxFontSizeMultiplier={1.5}>{opt.label}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
       {isLoading ? (
-        <View style={s.center}><ActivityIndicator size="large" color="#F97316" /></View>
+        <View style={s.center}><ActivityIndicator size="large" color="#F97316" accessibilityLabel="Carregando pedidos" /></View>
       ) : error ? (
         <View style={s.center}>
           <Text style={s.errorText}>Erro ao carregar pedidos</Text>
-          <TouchableOpacity onPress={() => refetch()} style={s.retryBtn}><Text style={s.retryText}>Tentar novamente</Text></TouchableOpacity>
+          <TouchableOpacity onPress={() => refetch()} style={s.retryBtn} accessibilityRole="button" accessibilityLabel="Tentar novamente"><Text style={s.retryText} maxFontSizeMultiplier={1.5}>Tentar novamente</Text></TouchableOpacity>
         </View>
       ) : (
-        <FlatList data={pedidos} keyExtractor={(item) => item.id.toString()} renderItem={({ item }) => <PedidoCard pedido={item} onPress={() => router.push(`/pedido/${item.id}`)} />} contentContainerStyle={{ padding: 16 }} ListEmptyComponent={<View style={[s.center, { paddingVertical: 48 }]}><Text style={{ color: '#A8A29E', fontSize: 16 }}>Nenhum pedido encontrado</Text></View>} />
+        <FlatList data={pedidos} keyExtractor={(item) => item.id.toString()} renderItem={({ item }) => <PedidoCard pedido={item} onPress={() => router.push(`/pedido/${item.id}`)} />} contentContainerStyle={{ padding: 16 }} ListEmptyComponent={<View style={[s.center, { paddingVertical: 48 }]}><Text style={{ color: '#78716C', fontSize: 16 }}>Nenhum pedido encontrado</Text></View>} />
       )}
     </View>
   );

@@ -24,18 +24,18 @@ export default function CuponsScreen() {
     catch (err: any) { Alert.alert('Erro', err.message || 'Erro ao criar cupom'); }
   };
 
-  if (isLoading) return <View style={s.center}><ActivityIndicator size="large" color="#F97316" /></View>;
+  if (isLoading) return <View style={s.center}><ActivityIndicator size="large" color="#F97316" accessibilityLabel="Carregando cupons" /></View>;
   if (error) return (
     <View style={s.center}>
       <Text style={s.errorText}>Erro ao carregar cupons</Text>
-      <TouchableOpacity onPress={() => refetch()} style={s.retryBtn}><Text style={s.retryText}>Tentar novamente</Text></TouchableOpacity>
+      <TouchableOpacity onPress={() => refetch()} style={s.retryBtn} accessibilityRole="button" accessibilityLabel="Tentar novamente"><Text style={s.retryText} maxFontSizeMultiplier={1.5}>Tentar novamente</Text></TouchableOpacity>
     </View>
   );
 
   return (
     <View style={s.container}>
-      <FlatList data={cupons} keyExtractor={(item) => item.id.toString()} renderItem={({ item }) => <CupomCard cupom={item} onToggleAtivo={() => handleToggleAtivo(item.id, item.ativo)} isToggling={togglingId === item.id} />} contentContainerStyle={{ padding: 16 }} ListEmptyComponent={<View style={[s.center, { paddingVertical: 48 }]}><Text style={{ color: '#A8A29E', fontSize: 16 }}>Nenhum cupom encontrado</Text></View>} />
-      <TouchableOpacity onPress={() => setModalVisible(true)} style={s.fab}><Text style={s.fabText}>+</Text></TouchableOpacity>
+      <FlatList data={cupons} keyExtractor={(item) => item.id.toString()} renderItem={({ item }) => <CupomCard cupom={item} onToggleAtivo={() => handleToggleAtivo(item.id, item.ativo)} isToggling={togglingId === item.id} />} contentContainerStyle={{ padding: 16 }} ListEmptyComponent={<View style={[s.center, { paddingVertical: 48 }]}><Text style={{ color: '#78716C', fontSize: 16 }}>Nenhum cupom encontrado</Text></View>} />
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={s.fab} accessibilityLabel="Criar novo cupom" accessibilityRole="button" accessibilityHint="Toque duas vezes para abrir formulário de novo cupom"><Text style={s.fabText}>+</Text></TouchableOpacity>
       <CriarCupomForm visible={modalVisible} onClose={() => setModalVisible(false)} onSubmit={handleCriarCupom} isSubmitting={criarCupom.isPending} />
     </View>
   );

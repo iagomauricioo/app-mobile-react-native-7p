@@ -21,7 +21,8 @@
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
-      }
+      },
+      "package": "com.iagomauricio.caldosadmin"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -30,6 +31,12 @@
       "expo-router",
       "expo-asset",
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "5bf7e138-bf61-4987-922b-6c5f53526bb9"
+      }
+    }
   }
 }

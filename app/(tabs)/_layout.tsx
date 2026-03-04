@@ -8,7 +8,7 @@ function TabIconWithDivider({ name, color, size, showDivider }: { name: keyof ty
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Ionicons name={name} size={size} color={color} />
       {showDivider && (
-        <View style={{ position: 'absolute', right: -27, height: 24, width: 1, backgroundColor: '#E7E5E4' }} />
+        <View style={{ position: 'absolute', right: -27, height: 24, width: 1, backgroundColor: '#E7E5E4' }} importantForAccessibility="no" accessibilityElementsHidden={true} />
       )}
     </View>
   );
@@ -42,7 +42,7 @@ export default function TabsLayout() {
         headerTitleStyle: { fontWeight: 'bold' },
         headerTitle: 'Caldos e Sopas CG',
         headerRight: () => (
-          <TouchableOpacity onPress={() => useAuthStore.getState().logout()} style={{ marginRight: 16 }}>
+          <TouchableOpacity onPress={() => useAuthStore.getState().logout()} style={{ marginRight: 16 }} accessibilityLabel="Sair da conta" accessibilityRole="button">
             <Ionicons name="log-out-outline" size={24} color="#F97316" />
           </TouchableOpacity>
         ),

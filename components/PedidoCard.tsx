@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { PedidoCompleto } from '../types/pedido';
 import { StatusBadge } from './StatusBadge';
 import { formatCentavos, formatData } from '../utils/format';
+import { gerarRotuloPedido } from '../utils/accessibility';
 
 interface PedidoCardProps {
   pedido: PedidoCompleto;
@@ -10,7 +11,15 @@ interface PedidoCardProps {
 
 export function PedidoCard({ pedido, onPress }: PedidoCardProps) {
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.card}>
+    <TouchableOpacity
+      onPress={onPress}
+      activeOpacity={0.7}
+      style={styles.card}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={gerarRotuloPedido(pedido)}
+      accessibilityHint="Toque duas vezes para ver detalhes do pedido"
+    >
       <View style={styles.header}>
         <Text style={styles.id}>Pedido #{pedido.id}</Text>
         <StatusBadge status={pedido.status} />
@@ -31,5 +40,5 @@ const styles = StyleSheet.create({
   cliente: { fontSize: 14, color: '#57534E', marginBottom: 4 },
   footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   total: { fontSize: 16, fontWeight: '600', color: '#F97316' },
-  data: { fontSize: 12, color: '#A8A29E' },
+  data: { fontSize: 12, color: '#78716C' },
 });

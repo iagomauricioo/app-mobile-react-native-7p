@@ -12,7 +12,7 @@ export default function DashboardScreen() {
   if (loadingStatus || loadingResumo) {
     return (
       <View style={s.center}>
-        <ActivityIndicator size="large" color="#F97316" />
+        <ActivityIndicator size="large" color="#F97316" accessibilityLabel="Carregando dados do painel" />
       </View>
     );
   }
@@ -34,12 +34,14 @@ export default function DashboardScreen() {
             disabled={alternarStatus.isPending}
             trackColor={{ false: '#D6D3D1', true: '#86EFAC' }}
             thumbColor={status?.aberto ? '#22C55E' : '#A8A29E'}
+            accessibilityLabel={`Status da loja, ${status?.aberto ? 'aberta' : 'fechada'}`}
+            accessibilityRole="switch"
           />
         </View>
       </View>
 
       {/* Cards de resumo */}
-      <Text style={s.sectionTitle}>Resumo do Dia</Text>
+      <Text style={s.sectionTitle} accessibilityRole="header">Resumo do Dia</Text>
       <View style={s.row}>
         <View style={[s.card, s.halfCard]}>
           <Text style={s.cardLabel}>Pedidos</Text>
@@ -59,7 +61,7 @@ export default function DashboardScreen() {
       {/* Pedidos por status */}
       {resumo?.pedidosPorStatus && Object.keys(resumo.pedidosPorStatus).length > 0 && (
         <>
-          <Text style={s.sectionTitle}>Pedidos por Status</Text>
+          <Text style={s.sectionTitle} accessibilityRole="header">Pedidos por Status</Text>
           <View style={s.card}>
             {Object.entries(resumo.pedidosPorStatus).map(([statusName, count]) => (
               <View key={statusName} style={s.statusItem}>
@@ -93,7 +95,7 @@ const s = StyleSheet.create({
   row: { flexDirection: 'row', gap: 12 },
   statusRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1C1917', marginTop: 8, marginBottom: 12 },
-  cardLabel: { fontSize: 13, color: '#A8A29E', fontWeight: '500', marginBottom: 4 },
+  cardLabel: { fontSize: 13, color: '#78716C', fontWeight: '500', marginBottom: 4 },
   cardValue: { fontSize: 24, fontWeight: '700', color: '#1C1917' },
   statusText: { fontSize: 18, fontWeight: '700' },
   statusItem: {

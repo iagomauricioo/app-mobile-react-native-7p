@@ -27,17 +27,17 @@ export default function LoginScreen() {
   return (
     <KeyboardAvoidingView style={s.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <View style={s.inner}>
-        <Text style={s.title}>🍲 Caldos e Sopas CG</Text>
+        <Text style={s.title} accessibilityRole="header" accessibilityLabel="Caldos e Sopas CG">🍲 Caldos e Sopas CG</Text>
         <Text style={s.subtitle}>Painel Administrativo</Text>
         <View style={s.card}>
           <Text style={s.cardTitle}>Entrar</Text>
           <Text style={s.label}>Login</Text>
-          <TextInput style={s.input} placeholder="Seu usuário" placeholderTextColor="#a8a29e" value={login} onChangeText={setLogin} autoCapitalize="none" autoCorrect={false} editable={!loading} />
+          <TextInput style={s.input} placeholder="Seu usuário" placeholderTextColor="#a8a29e" value={login} onChangeText={setLogin} autoCapitalize="none" autoCorrect={false} editable={!loading} accessibilityLabel="Login" />
           <Text style={s.label}>Senha</Text>
-          <TextInput style={s.input} placeholder="Sua senha" placeholderTextColor="#a8a29e" value={password} onChangeText={setPassword} secureTextEntry editable={!loading} />
-          {error ? <Text style={s.error}>{error}</Text> : null}
-          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading} activeOpacity={0.8}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.buttonText}>Entrar</Text>}
+          <TextInput style={s.input} placeholder="Sua senha" placeholderTextColor="#a8a29e" value={password} onChangeText={setPassword} secureTextEntry editable={!loading} accessibilityLabel="Senha" />
+          {error ? <Text style={s.error} accessibilityLiveRegion="polite">{error}</Text> : null}
+          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Entrar">
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.buttonText} maxFontSizeMultiplier={1.5}>Entrar</Text>}
           </TouchableOpacity>
         </View>
       </View>

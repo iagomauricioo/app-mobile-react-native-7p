@@ -14,8 +14,8 @@ function Section({ title, icon, children }: { title: string; icon: keyof typeof 
   return (
     <View style={st.section}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12, gap: 8 }}>
-        <Ionicons name={icon} size={18} color="#F97316" />
-        <Text style={[st.sectionTitle, { marginBottom: 0 }]}>{title}</Text>
+        <Ionicons name={icon} size={18} color="#F97316" importantForAccessibility="no" accessibilityElementsHidden={true} />
+        <Text style={[st.sectionTitle, { marginBottom: 0 }]} accessibilityRole="header">{title}</Text>
       </View>
       {children}
     </View>
@@ -97,13 +97,13 @@ export default function PedidoDetalhesScreen() {
         {pedido.observacoes ? <Section title="Observações" icon="chatbubble-outline"><Text style={{ fontSize: 14, color: '#57534E' }}>{pedido.observacoes}</Text></Section> : null}
         <View style={{ marginTop: 8 }}>
           {nextStatus && !terminal && (
-            <TouchableOpacity style={[st.advBtn, isMutating && { backgroundColor: '#FDBA74' }]} onPress={handleAvancar} disabled={isMutating} activeOpacity={0.8}>
-              {atualizarStatus.isPending ? <ActivityIndicator color="#fff" /> : <Text style={st.advText}>Avançar para {STATUS_LABELS[nextStatus]}</Text>}
+            <TouchableOpacity style={[st.advBtn, isMutating && { backgroundColor: '#FDBA74' }]} onPress={handleAvancar} disabled={isMutating} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel={`Avançar para ${STATUS_LABELS[nextStatus]}`}>
+              {atualizarStatus.isPending ? <ActivityIndicator color="#fff" /> : <Text style={st.advText} maxFontSizeMultiplier={1.5}>Avançar para {STATUS_LABELS[nextStatus]}</Text>}
             </TouchableOpacity>
           )}
           {!terminal && (
-            <TouchableOpacity style={[st.cancelBtn, isMutating && { borderColor: '#FECACA' }]} onPress={handleCancelar} disabled={isMutating} activeOpacity={0.8}>
-              {cancelarPedido.isPending ? <ActivityIndicator color="#EF4444" /> : <Text style={[st.cancelText, isMutating && { color: '#FCA5A5' }]}>Cancelar Pedido</Text>}
+            <TouchableOpacity style={[st.cancelBtn, isMutating && { borderColor: '#FECACA' }]} onPress={handleCancelar} disabled={isMutating} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Cancelar pedido">
+              {cancelarPedido.isPending ? <ActivityIndicator color="#EF4444" /> : <Text style={[st.cancelText, isMutating && { color: '#FCA5A5' }]} maxFontSizeMultiplier={1.5}>Cancelar Pedido</Text>}
             </TouchableOpacity>
           )}
           {terminal && <View style={st.termBadge}><Text style={st.termText}>Pedido {STATUS_LABELS[pedido.status].toLowerCase()} — sem ações</Text></View>}
@@ -118,12 +118,12 @@ const st = StyleSheet.create({
   loading: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#FFF7ED' },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 },
   headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#1C1917' },
-  headerDate: { fontSize: 12, color: '#A8A29E', marginTop: 4 },
+  headerDate: { fontSize: 12, color: '#78716C', marginTop: 4 },
   section: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12, elevation: 2 },
   sectionTitle: { fontSize: 16, fontWeight: 'bold', color: '#1C1917', marginBottom: 12 },
   itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#F5F5F4' },
   itemName: { fontSize: 14, fontWeight: '500', color: '#44403C' },
-  itemDetail: { fontSize: 12, color: '#A8A29E' },
+  itemDetail: { fontSize: 12, color: '#78716C' },
   itemPrice: { fontSize: 14, fontWeight: '600', color: '#F97316' },
   info: { fontSize: 14, color: '#44403C' },
   infoSub: { fontSize: 14, color: '#78716C', marginTop: 4 },

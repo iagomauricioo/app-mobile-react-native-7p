@@ -1,6 +1,7 @@
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import type { Cupom } from '../types/cupom';
 import { formatCentavos, formatData } from '../utils/format';
+import { gerarRotuloCupom } from '../utils/accessibility';
 
 interface CupomCardProps {
   cupom: Cupom;
@@ -16,7 +17,7 @@ export function CupomCard({ cupom, onToggleAtivo, isToggling }: CupomCardProps) 
       : formatCentavos(cupom.valorDesconto);
 
   return (
-    <View style={styles.card}>
+    <View style={styles.card} accessible={true} accessibilityLabel={gerarRotuloCupom(cupom)}>
       <View style={styles.header}>
         <Text style={styles.codigo}>{cupom.codigo}</Text>
         <Switch
@@ -25,6 +26,8 @@ export function CupomCard({ cupom, onToggleAtivo, isToggling }: CupomCardProps) 
           disabled={isToggling}
           trackColor={{ false: '#D1D5DB', true: '#FDBA74' }}
           thumbColor={cupom.ativo ? '#F97316' : '#9CA3AF'}
+          accessibilityLabel={`Cupom ${cupom.codigo}, ${cupom.ativo ? 'ativo' : 'inativo'}`}
+          accessibilityRole="switch"
         />
       </View>
       <View style={styles.badges}>
