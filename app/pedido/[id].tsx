@@ -6,6 +6,7 @@ import { formatCentavos, formatTelefone, formatData } from '../../utils/format';
 import { getNextStatus, isTerminalStatus, STATUS_LABELS } from '../../utils/statusHelpers';
 import { PedidoCompleto, ItemPedido } from '../../types/pedido';
 import { Ionicons } from '@expo/vector-icons';
+import { useClipboard } from '../../hooks/useClipboard';
 
 const FORMA_PAG: Record<string, string> = { PIX: 'PIX', CREDIT_CARD: 'Cartão de Crédito' };
 const STATUS_PAG: Record<string, string> = { PENDENTE: 'Pendente', APROVADO: 'Aprovado', REJEITADO: 'Rejeitado', CANCELADO: 'Cancelado', ESTORNADO: 'Estornado', EXPIRADO: 'Expirado' };
@@ -19,6 +20,23 @@ function Section({ title, icon, children }: { title: string; icon: keyof typeof 
       </View>
       {children}
     </View>
+  );
+}
+
+function CopyableText({ text, label, style }: { text: string; label: string; style?: any }) {
+  const { copiar } = useClipboard();
+  return (
+    <TouchableOpacity
+      onPress={() => copiar(text, label)}
+      style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+      activeOpacity={0.6}
+      accessibilityRole="button"
+      accessibilityLabel={`Copiar ${label}`}
+      accessibilityHint="Toque para copiar"
+    >
+      <Text style={style}>{text}</Text>
+      <Ionicons name="copy-outline" size={14} color="#A8A29E" />
+    </TouchableOpacity>
   );
 }
 
@@ -77,11 +95,10 @@ export default function PedidoDetalhesScreen() {
         <Section title="Itens" icon="cart-outline">{pedido.itens.map((i: ItemPedido) => <ItemRow key={i.id} item={i} />)}</Section>
         <Section title="Cliente" icon="person-outline">
           <Text style={st.info}>{pedido.cliente.nome}</Text>
-          <Text style={st.infoSub}>{formatTelefone(pedido.cliente.telefone)}</Text>
+          <CopyableText text={formatTelefone(pedido.cliente.telefone)} label="Telefone" style={st.infoSub} />
         </Section>
         <Section title="Endereço" icon="location-outline">
-          <Text style={st.info}>{pedido.endereco.rua}, {pedido.endereco.numero}</Text>
-          <Text style={st.info}>{pedido.endereco.bairro}</Text>
+          <CopyableText text={`${pedido.endereco.rua}, ${pedido.endereco.numero} - ${pedido.endereco.bairro}`} label="Endereço" style={st.info} />
           {pedido.endereco.complemento ? <Text style={[st.infoSub, { color: '#A8A29E' }]}>{pedido.endereco.complemento}</Text> : null}
         </Section>
         <Section title="Pagamento" icon="card-outline">

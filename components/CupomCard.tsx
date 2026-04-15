@@ -1,7 +1,9 @@
-import { View, Text, Switch, StyleSheet } from 'react-native';
+import { View, Text, Switch, TouchableOpacity, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import type { Cupom } from '../types/cupom';
 import { formatCentavos, formatData } from '../utils/format';
 import { gerarRotuloCupom } from '../utils/accessibility';
+import { useClipboard } from '../hooks/useClipboard';
 
 interface CupomCardProps {
   cupom: Cupom;
@@ -10,6 +12,7 @@ interface CupomCardProps {
 }
 
 export function CupomCard({ cupom, onToggleAtivo, isToggling }: CupomCardProps) {
+  const { copiar } = useClipboard();
   const tipoLabel = cupom.tipoDesconto === 'PERCENTUAL' ? 'Percentual' : 'Valor Fixo';
   const valorLabel =
     cupom.tipoDesconto === 'PERCENTUAL'
@@ -19,7 +22,17 @@ export function CupomCard({ cupom, onToggleAtivo, isToggling }: CupomCardProps) 
   return (
     <View style={styles.card} accessible={true} accessibilityLabel={gerarRotuloCupom(cupom)}>
       <View style={styles.header}>
-        <Text style={styles.codigo}>{cupom.codigo}</Text>
+        <TouchableOpacity
+          style={styles.codigoRow}
+          onPress={() => copiar(cupom.codigo, 'Código')}
+          accessibilityRole="button"
+          accessibilityLabel={`Copiar código ${cupom.codigo}`}
+          accessibilityHint="Toque para copiar o código do cupom"
+          activeOpacity={0.6}
+        >
+          <Text style={styles.codigo}>{cupom.codigo}</Text>
+          <Ionicons name="copy-outline" size={16} color="#A8A29E" />
+        </TouchableOpacity>
         <Switch
           value={cupom.ativo}
           onValueChange={onToggleAtivo}
@@ -51,6 +64,7 @@ export function CupomCard({ cupom, onToggleAtivo, isToggling }: CupomCardProps) 
 const styles = StyleSheet.create({
   card: { backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 12, elevation: 2 },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 },
+  codigoRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   codigo: { fontSize: 16, fontWeight: 'bold', color: '#1C1917', textTransform: 'uppercase' },
   badges: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
   tipoBadge: { backgroundColor: '#FFF7ED', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 6 },

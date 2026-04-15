@@ -14,14 +14,33 @@ export default function LoginScreen() {
   const storeLogin = useAuthStore((s) => s.login);
 
   const handleLogin = async () => {
+    console.log('[LOGIN] handleLogin chamado');
+    console.log('[LOGIN] loading:', loading);
+    console.log('[LOGIN] login:', JSON.stringify(login), 'password length:', password.length);
     setError('');
-    if (!login.trim() || !password.trim()) { setError('Preencha todos os campos'); return; }
+    if (!login.trim() || !password.trim()) {
+      console.log('[LOGIN] campos vazios, abortando');
+      setError('Preencha todos os campos');
+      return;
+    }
     setLoading(true);
+    console.log('[LOGIN] chamando authService.login...');
     try {
       const response = await authService.login(login.trim(), password);
-      storeLogin(response.data.data.token);
-    } catch { setError('Usuário ou senha inválidos'); }
-    finally { setLoading(false); }
+      console.log('[LOGIN] resposta recebida:', JSON.stringify(response.data));
+      const token = response.data.data.token;
+      console.log('[LOGIN] token recebido, length:', token?.length);
+      storeLogin(token);
+      console.log('[LOGIN] storeLogin chamado com sucesso');
+    } catch (err: any) {
+      console.log('[LOGIN] ERRO:', err?.message);
+      console.log('[LOGIN] ERRO response:', JSON.stringify(err?.response?.data));
+      console.log('[LOGIN] ERRO status:', err?.response?.status);
+      setError('Usuário ou senha inválidos');
+    } finally {
+      console.log('[LOGIN] finally, setLoading(false)');
+      setLoading(false);
+    }
   };
 
   return (
@@ -36,7 +55,7 @@ export default function LoginScreen() {
           <Text style={s.label}>Senha</Text>
           <TextInput style={s.input} placeholder="Sua senha" placeholderTextColor="#a8a29e" value={password} onChangeText={setPassword} secureTextEntry editable={!loading} accessibilityLabel="Senha" />
           {error ? <Text style={s.error} accessibilityLiveRegion="polite">{error}</Text> : null}
-          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Entrar">
+          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={() => { console.log('[LOGIN] botão TOCADO, disabled:', loading); handleLogin(); }} disabled={loading} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Entrar">
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.buttonText} maxFontSizeMultiplier={1.5}>Entrar</Text>}
           </TouchableOpacity>
         </View>
