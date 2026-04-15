@@ -30,7 +30,14 @@
     "plugins": [
       "expo-router",
       "expo-asset",
-      "expo-font"
+      "expo-font",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Permitir que Caldos Admin use Face ID para login rápido"
+        }
+      ]
     ],
     "extra": {
       "router": {},

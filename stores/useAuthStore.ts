@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isTokenValid } from '../utils/jwt';
+import { biometricService } from '../services/biometricService';
 
 interface AuthState {
   token: string | null;
@@ -15,7 +16,10 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       token: null,
 
-      login: (token: string) => set({ token }),
+      login: (token: string) => {
+        set({ token });
+        biometricService.updateToken(token).catch(() => {});
+      },
 
       logout: () => set({ token: null }),
 

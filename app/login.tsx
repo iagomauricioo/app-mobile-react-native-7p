@@ -1,44 +1,102 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
-  ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet,
+  ActivityIndicator, KeyboardAvoidingView, Platform, StyleSheet, Alert,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { authService } from '../services/authService';
 import { useAuthStore } from '../stores/useAuthStore';
+import { biometricService } from '../services/biometricService';
+import { isTokenValid } from '../utils/jwt';
 
 export default function LoginScreen() {
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [biometricVisible, setBiometricVisible] = useState(false);
   const storeLogin = useAuthStore((s) => s.login);
 
+  // Checa se biometria tá disponível e habilitada — nunca bloqueia nada
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const available = await biometricService.isAvailable();
+        if (!available || cancelled) return;
+        const enabled = await biometricService.isEnabled();
+        if (!cancelled && enabled) {
+          setBiometricVisible(true);
+        }
+      } catch { /* ignora */ }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // Login com senha — fluxo principal, nunca bloqueado por biometria
   const handleLogin = async () => {
     console.log('[LOGIN] handleLogin chamado');
-    console.log('[LOGIN] loading:', loading);
-    console.log('[LOGIN] login:', JSON.stringify(login), 'password length:', password.length);
     setError('');
     if (!login.trim() || !password.trim()) {
-      console.log('[LOGIN] campos vazios, abortando');
       setError('Preencha todos os campos');
       return;
     }
     setLoading(true);
-    console.log('[LOGIN] chamando authService.login...');
     try {
       const response = await authService.login(login.trim(), password);
-      console.log('[LOGIN] resposta recebida:', JSON.stringify(response.data));
       const token = response.data.data.token;
-      console.log('[LOGIN] token recebido, length:', token?.length);
+      console.log('[LOGIN] token recebido');
+
+      // Salva token e redireciona PRIMEIRO
       storeLogin(token);
-      console.log('[LOGIN] storeLogin chamado com sucesso');
+
+      // Depois oferece biometria (fire-and-forget, não bloqueia)
+      offerBiometric(token);
     } catch (err: any) {
       console.log('[LOGIN] ERRO:', err?.message);
-      console.log('[LOGIN] ERRO response:', JSON.stringify(err?.response?.data));
-      console.log('[LOGIN] ERRO status:', err?.response?.status);
       setError('Usuário ou senha inválidos');
     } finally {
-      console.log('[LOGIN] finally, setLoading(false)');
+      setLoading(false);
+    }
+  };
+
+  // Oferece ativar biometria — roda depois do login, nunca bloqueia
+  const offerBiometric = async (token: string) => {
+    try {
+      const available = await biometricService.isAvailable();
+      const enabled = await biometricService.isEnabled();
+      if (available && !enabled) {
+        Alert.alert(
+          'Acesso rápido',
+          'Deseja usar biometria para entrar na próxima vez?',
+          [
+            { text: 'Agora não', style: 'cancel' },
+            { text: 'Ativar', onPress: () => biometricService.enable(token).catch(() => {}) },
+          ],
+        );
+      } else if (enabled) {
+        biometricService.updateToken(token).catch(() => {});
+      }
+    } catch { /* ignora */ }
+  };
+
+  // Login com biometria — fluxo alternativo
+  const handleBiometricLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+      const token = await biometricService.authenticate();
+      if (token && isTokenValid(token)) {
+        storeLogin(token);
+      } else if (token) {
+        setError('Sessão expirada. Faça login com senha.');
+        biometricService.disable().catch(() => {});
+        setBiometricVisible(false);
+      }
+      // null = usuário cancelou, sem erro
+    } catch {
+      setError('Erro na autenticação biométrica');
+    } finally {
       setLoading(false);
     }
   };
@@ -55,9 +113,23 @@ export default function LoginScreen() {
           <Text style={s.label}>Senha</Text>
           <TextInput style={s.input} placeholder="Sua senha" placeholderTextColor="#a8a29e" value={password} onChangeText={setPassword} secureTextEntry editable={!loading} accessibilityLabel="Senha" />
           {error ? <Text style={s.error} accessibilityLiveRegion="polite">{error}</Text> : null}
-          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={() => { console.log('[LOGIN] botão TOCADO, disabled:', loading); handleLogin(); }} disabled={loading} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Entrar">
+          <TouchableOpacity style={[s.button, loading && s.buttonDisabled]} onPress={handleLogin} disabled={loading} activeOpacity={0.8} accessibilityRole="button" accessibilityLabel="Entrar">
             {loading ? <ActivityIndicator color="#fff" /> : <Text style={s.buttonText} maxFontSizeMultiplier={1.5}>Entrar</Text>}
           </TouchableOpacity>
+
+          {biometricVisible && (
+            <TouchableOpacity
+              style={s.biometricButton}
+              onPress={handleBiometricLogin}
+              disabled={loading}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel="Entrar com biometria"
+            >
+              <Ionicons name="finger-print-outline" size={28} color="#F97316" />
+              <Text style={s.biometricText}>Entrar com biometria</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -77,4 +149,16 @@ const s = StyleSheet.create({
   button: { width: '100%', backgroundColor: '#F97316', borderRadius: 10, paddingVertical: 14, alignItems: 'center' },
   buttonDisabled: { backgroundColor: '#FDBA74' },
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  biometricButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: '#F97316',
+    borderRadius: 10,
+  },
+  biometricText: { fontSize: 15, fontWeight: '500', color: '#F97316' },
 });
